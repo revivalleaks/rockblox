@@ -1,0 +1,322 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>rockblox</title>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;700&display=swap" rel="stylesheet">
+  <style>
+    /* Reset */
+    *{box-sizing:border-box;margin:0;padding:0}
+    html,body{height:100%;font-family:Rubik,system-ui,Arial,sans-serif;background:#efefef;color:#333}
+
+    /* Top bar (Roblox 2017 style) */
+    .topbar{background:#0b63b7;color:#fff;padding:10px 18px;display:flex;align-items:center;gap:12px}
+    .topbar .logo{width:34px;height:34px;background:#fff;border-radius:6px;display:flex;align-items:center;justify-content:center;font-weight:700;color:#0b63b7}
+    .topbar .search{flex:1;margin-left:6px}
+    .search input{width:100%;padding:8px 12px;border-radius:4px;border:0}
+    .topbar .right{display:flex;gap:10px;align-items:center}
+
+    /* Layout */
+    .container{max-width:980px;margin:18px auto;background:#f5f5f5;padding:18px;border-radius:6px;box-shadow:0 6px 20px rgba(0,0,0,0.06)}
+
+    /* Profile header */
+    .profile{display:flex;gap:18px;align-items:center;padding:12px}
+    .avatar{width:120px;height:120px;border-radius:50%;overflow:hidden;box-shadow:0 4px 10px rgba(0,0,0,0.12);background:linear-gradient(135deg,#ff6b6b,#ffcc70);display:flex;align-items:center;justify-content:center;color:#fff;font-size:40px}
+    .profile h1{font-size:28px;margin-bottom:6px}
+    .profile small{display:block;color:#666;margin-top:4px}
+
+    /* Friends carousel */
+    .friends{margin-top:12px}
+    .friends h3{font-size:16px;margin-bottom:8px}
+    .friend-row{display:flex;gap:12px;padding:12px;background:#fff;border-radius:10px;align-items:center;overflow-x:auto}
+    .friend{width:64px;min-width:64px;text-align:center}
+    .friend .f-avatar{width:56px;height:56px;border-radius:50%;overflow:hidden;border:3px solid rgba(0,0,0,0.06);display:block;margin:0 auto;position:relative}
+    .check{position:absolute;right:0;bottom:0;background:#0b63b7;color:#fff;font-size:12px;padding:2px 5px;border-radius:10px;border:2px solid #fff}
+    .friend p{font-size:12px;margin-top:6px}
+
+    /* Side ads style mimic */
+    .ads{position:fixed;left:8px;top:80px;width:120px;height:420px;background:#fff;border-radius:6px;box-shadow:0 4px 12px rgba(0,0,0,0.08);display:flex;align-items:center;justify-content:center}
+    .ads.right{left:auto;right:8px}
+
+    /* Actions */
+    .actions{margin-left:auto}
+    .btn{background:#0b63b7;color:#fff;padding:8px 12px;border-radius:6px;border:0;cursor:pointer}
+
+    /* Card sections */
+    .card{background:#fff;padding:14px;border-radius:10px;margin-top:14px}
+
+    /* Login/Register modal (simple) */
+    .modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,0.4);z-index:60}
+    .modal.open{display:flex}
+    .modal .box{width:360px;background:#fff;padding:18px;border-radius:10px}
+    .field{margin-bottom:10px}
+    .field label{display:block;font-size:13px;margin-bottom:6px}
+    .field input{width:100%;padding:10px;border-radius:6px;border:1px solid #ddd}
+
+    /* Responsive */
+    @media (max-width:640px){.container{margin:8px;padding:12px}.avatar{width:90px;height:90px}.profile h1{font-size:20px}}
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <div class="logo">ROCKBLOX</div>
+    <div class="search"><input placeholder="Search" /></div>
+    <div class="right">
+      <button id="authBtn" class="btn">Login / Register</button>
+    </div>
+  </div>
+
+  
+  
+
+  
+
+<aside id="sidebar" style="display:none; position:fixed; left:0; top:60px; width:180px; height:100%; background:#ffffff; box-shadow:2px 0 6px rgba(0,0,0,0.15); padding:15px; z-index:50; font-family:Arial;">
+  <div style="text-align:center; margin-bottom:20px;">
+    <img id="profilePic" src="https://tr.rbxcdn.com/30DAY-AvatarHeadshot-AUTO/150/150/AvatarHeadshot/Png" style="width:80px; height:80px; border-radius:50%; object-fit:cover; cursor:pointer;">
+    <input type="file" id="picInput" accept="image/*" style="display:none;" />
+    <div id="usernameBox" style="margin-top:8px; font-weight:bold; font-size:14px;">Usuario</div>
+  </div>
+  <a href="#home" style="display:block; padding:8px; margin-bottom:6px; background:#e5e5e5; border-radius:6px; text-decoration:none; color:#000;">Home</a>
+  <a href="#catalog" style="display:block; padding:8px; margin-bottom:6px; background:#e5e5e5; border-radius:6px; text-decoration:none; color:#000;">Catalog</a>
+  <a href="#profile" style="display:block; padding:8px; margin-bottom:6px; background:#e5e5e5; border-radius:6px; text-decoration:none; color:#000;">Perfil</a>
+</aside>
+
+<main class="container" id="mainContent" style="display:none; margin-left:200px">
+    <section class="profile">
+      <div class="avatar" id="profileAvatar">ON</div>
+      <div>
+        <h1 id="greeting">Hello, Onichan!</h1>
+        <small id="status">Bienvenido a tu perfil</small>
+      </div>
+      <div class="actions">
+        <button id="signOutBtn" class="btn" style="display:none">Sign out</button>
+      </div>
+    </section>
+
+    <section class="friends">
+      <h3>Friends (12)</h3>
+      <div class="friend-row" id="friendRow">
+        <!-- sample friends -->
+        <div class="friend">
+          <div class="f-avatar" style="background:#111;color:#fff;display:flex;align-items:center;justify-content:center">dews<span class="check">✓</span></div>
+          <p>dews</p>
+        </div>
+        <div class="friend">
+          <div class="f-avatar" style="background:linear-gradient(135deg,#7be5ff,#c77bff);display:flex;align-items:center;justify-content:center">P</div>
+          <p>Ponuss</p>
+        </div>
+        <div class="friend">
+          <div class="f-avatar" style="background:#ffb8c3;display:flex;align-items:center;justify-content:center">IJ</div>
+          <p>im_johaan</p>
+        </div>
+        <div class="friend">
+          <div class="f-avatar" style="background:#e6f2ff;display:flex;align-items:center;justify-content:center">phn<span class="check">✓</span></div>
+          <p>phn</p>
+        </div>
+        <div class="friend">
+          <div class="f-avatar" style="background:#dfe9c6;display:flex;align-items:center;justify-content:center">2f</div>
+          <p>2fa</p>
+        </div>
+        <div class="friend">
+          <div class="f-avatar" style="background:#222;display:flex;align-items:center;justify-content:center">T</div>
+          <p>temmie</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="card" id="contentArea">
+      <h3>RECENT</h3>
+      <p style="color:#666;margin-top:8px">Aquí iría contenido dinámico: juegos, actividad, etc.</p>
+    </section>
+  </main>
+
+  <!-- Login/Register modal -->
+  <div id="modal" class="modal">
+    <div class="box">
+      <h3 id="modalTitle">Login</h3>
+      <div class="field"><label>Email</label><input id="emailInput" type="email" /></div>
+      <div class="field"><label>Password</label><input id="passInput" type="password" /></div>
+      <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:8px">
+        <button id="toggleMode" class="btn" style="background:#ccc;color:#000">Switch to Register</button>
+        <button id="submitAuth" class="btn">Submit</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Firebase SDKs (compat) -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+
+  <!-- IMPORTANT: your database.js should define `window.firebaseConfig` and optionally initialize firebase-app. -->
+  <script src="database.js"></script>
+
+  <script>
+    // Initialize Firebase (expect database.js to provide window.firebaseConfig)
+    if (window.firebaseConfig && window.firebase && window.firebase.initializeApp) {
+      try { window._firebaseApp = firebase.initializeApp(window.firebaseConfig); }
+      catch(e){ console.warn('Firebase already initialized or error', e); }
+    } else {
+      console.warn('No firebaseConfig found. Create database.js with your Firebase config.');
+    }
+
+    // UI elements
+    const modal = document.getElementById('modal');
+    const authBtn = document.getElementById('authBtn');
+    const submitAuth = document.getElementById('submitAuth');
+    const toggleMode = document.getElementById('toggleMode');
+    const modalTitle = document.getElementById('modalTitle');
+    const emailInput = document.getElementById('emailInput');
+    const passInput = document.getElementById('passInput');
+    const signOutBtn = document.getElementById('signOutBtn');
+    const greeting = document.getElementById('greeting');
+    const status = document.getElementById('status');
+    const profileAvatar = document.getElementById('profileAvatar');
+
+    let isRegister = false;
+
+    authBtn.addEventListener('click', ()=>{ modal.classList.add('open'); });
+    modal.addEventListener('click', (e)=>{ if(e.target===modal) modal.classList.remove('open'); });
+
+    toggleMode.addEventListener('click', ()=>{
+      isRegister = !isRegister;
+      modalTitle.textContent = isRegister ? 'Register' : 'Login';
+      toggleMode.textContent = isRegister ? 'Switch to Login' : 'Switch to Register';
+    });
+
+    submitAuth.addEventListener('click', async ()=>{
+      const email = emailInput.value.trim();
+      const pass = passInput.value;
+      if (!email || !pass) return alert('Rellena email y contraseña');
+      if (!firebase || !firebase.auth) return alert('Firebase no está inicializado. Revisa database.js');
+
+      try{
+        if (isRegister) {
+          await firebase.auth().createUserWithEmailAndPassword(email, pass);
+        } else {
+          await firebase.auth().signInWithEmailAndPassword(email, pass);
+        }
+        modal.classList.remove('open');
+      } catch(err){
+        alert('Error: '+err.message);
+      }
+    });
+
+    signOutBtn.addEventListener('click', ()=>{
+      if (firebase && firebase.auth) firebase.auth().signOut();
+    });
+
+    // Observe auth state
+    if (firebase && firebase.auth) {
+      firebase.auth().onAuthStateChanged(user=>{
+        if (user) {
+          // user logged in
+          greeting.textContent = user.displayName || user.email || 'Usuario';
+          status.textContent = 'Conectado: ' + (user.email || 'anónimo');
+          authBtn.style.display = 'none';
+          signOutBtn.style.display = 'inline-block';
+          profileAvatar.textContent = (user.displayName || '').slice(0,2).toUpperCase() || user.email.slice(0,2).toUpperCase();
+        } else {
+          greeting.textContent = 'Hello, Onichan!';
+          status.textContent = 'Bienvenido a tu perfil';
+          authBtn.style.display = 'inline-block';
+          signOutBtn.style.display = 'none';
+          profileAvatar.textContent = 'ON';
+        }
+      });
+    }
+
+    // Example: dynamically render friends (could be fetched from database later)
+    const friendRow = document.getElementById('friendRow');
+    function addFriend(name, color, checked){
+      const el = document.createElement('div'); el.className='friend';
+      const html = `\n        <div class="f-avatar" style="background:${color};display:flex;align-items:center;justify-content:center;position:relative">${name.slice(0,2)}${checked?'<span class="check">✓</span>':''}</div>\n        <p>${name}</p>`;
+      el.innerHTML = html;
+      friendRow.appendChild(el);
+    }
+    // add few extras to mimic the screenshot
+    addFriend('777c','linear-gradient(135deg,#89f7fe,#66a6ff)',false);
+    addFriend('alpha','linear-gradient(135deg,#ffd6a5,#fdc4f6)',true);
+
+  </script>
+
+  <!--
+    SAMPLE database.js (create this file and do NOT commit private keys publicly):
+
+    // database.js
+    window.firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "your-project.firebaseapp.com",
+      projectId: "your-project-id",
+      storageBucket: "your-project-id.appspot.com",
+      messagingSenderId: "...",
+      appId: "..."
+    };
+
+    // optional: initialize firebase here instead of in index.html
+    // if you want to initialize here, add:
+    // firebase.initializeApp(window.firebaseConfig);
+
+  -->
+<script>
+// Mostrar u ocultar contenido según login
+function updateUI(user){
+  const main = document.getElementById('mainContent');
+  const authBtn = document.getElementById('authBtn');
+  const signOutBtn = document.getElementById('signOutBtn');
+  if(user){
+    main.style.display = 'block';
+    authBtn.style.display = 'none';
+    signOutBtn.style.display = 'inline-block';
+  } else {
+    main.style.display = 'none';
+    authBtn.style.display = 'inline-block';
+    signOutBtn.style.display = 'none';
+  }
+}
+if (firebase && firebase.auth){
+  firebase.auth().onAuthStateChanged(u=>updateUI(u));
+}
+</script>
+<script>
+// Sidebar UI update with login state
+function updateUI(user){
+  const main = document.getElementById('mainContent');
+  const authBtn = document.getElementById('authBtn');
+  const signOutBtn = document.getElementById('signOutBtn');
+  const sidebar = document.getElementById('sidebar');
+  const usernameBox = document.getElementById('usernameBox');
+
+  if(user){
+    main.style.display = 'block';
+    sidebar.style.display = 'block';
+    authBtn.style.display = 'none';
+    signOutBtn.style.display = 'inline-block';
+    usernameBox.textContent = user.email.split('@')[0];
+  } else {
+    main.style.display = 'none';
+    sidebar.style.display = 'none';
+    authBtn.style.display = 'inline-block';
+    signOutBtn.style.display = 'none';
+  }
+}
+
+// Profile picture change
+const profilePic = document.getElementById('profilePic');
+const picInput = document.getElementById('picInput');
+profilePic.onclick = ()=> picInput.click();
+picInput.onchange = function(){
+  const file = this.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = e => profilePic.src = e.target.result;
+  reader.readAsDataURL(file);
+};
+
+if (firebase && firebase.auth){
+  firebase.auth().onAuthStateChanged(u=>updateUI(u));
+}
+</script>
+</body>
+</html>
